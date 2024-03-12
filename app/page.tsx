@@ -3,8 +3,8 @@ import { Modal } from "@/components";
 import { KeyboardEventHandler, useState } from "react";
 
 export default function Home() {
-  let listSaved = [];
-  const arrSaved = localStorage.getItem("personList");
+  let listSaved: string[] = [];
+  const arrSaved: string | null = localStorage.getItem("personList");
   if (arrSaved) {
     listSaved = JSON.parse(arrSaved);
   }
@@ -74,9 +74,9 @@ export default function Home() {
   const handleResetGroups = () => setGroupsGenerated([]);
 
   const handleSelectPerson = (groupNumber: number | undefined) => {
-    let selected = "";
+    let selected: string = "";
     if (groupNumber || groupNumber === 0) {
-      const groupSelected = groupsGenerated[groupNumber];
+      const groupSelected: string[] = groupsGenerated[groupNumber];
       const indexRandom: number = Math.floor(
         Math.random() * groupSelected.length
       );
@@ -162,20 +162,35 @@ export default function Home() {
         <div className="flex flex-col p-2 w-full h-max">
           <div className="flex flex-wrap gap-4 justify-evenly mb-2 w-full p-4 border-gray-400 border-b border-solid">
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              className={`${
+                personList.length > 1
+                  ? "bg-green-500 hover:bg-green-700"
+                  : "bg-gray-400"
+              } text-white font-bold py-2 px-4 rounded`}
               onClick={handleGenerateGroups}
+              disabled={personList.length <= 1}
             >
               Generar grupos
             </button>
             <button
-              className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
+              className={`${
+                personList.length > 1
+                  ? "bg-teal-500 hover:bg-teal-700"
+                  : "bg-gray-400"
+              } text-white font-bold py-2 px-4 rounded`}
               onClick={handleResetGroups}
+              disabled={personList.length <= 1}
             >
               Limpiar grupos
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              className={`${
+                personList.length > 1
+                  ? "bg-red-500 hover:bg-red-700"
+                  : "bg-gray-400"
+              } text-white font-bold py-2 px-4 rounded`}
               onClick={() => handleSelectPerson(undefined)}
+              disabled={personList.length <= 1}
             >
               Pasar al frente
             </button>
