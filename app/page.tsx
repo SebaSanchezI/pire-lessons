@@ -57,18 +57,14 @@ export default function Home() {
   };
 
   const handleGenerateGroups = () => {
-    // Copiar el array original para no modificarlo directamente
     const arrayCopy = [...personList];
-    // Inicializar los grupos
     let groups: string[][] = Array.from({ length: countGroup }, () => []);
     while (arrayCopy.length > 0) {
       for (let i = 0; i < countGroup; i++) {
-        // selecciona un grupo
-        const idxElement = Math.floor(Math.random() * arrayCopy.length);
+        const idxElement: number = Math.floor(Math.random() * arrayCopy.length);
         groups[i].push(arrayCopy.splice(idxElement, 1)[0]);
       }
     }
-    // borra los elementos con undefined
     groups = groups.map((group: string[]) => {
       return group.filter((el: string) => el);
     });
@@ -77,10 +73,21 @@ export default function Home() {
 
   const handleResetGroups = () => setGroupsGenerated([]);
 
-  const handleSelectPerson = () => {
-    const indexRandom: number = Math.floor(Math.random() * personList.length);
-    setSelectedPerson(personList[indexRandom]);
+  const handleSelectPerson = (groupNumber: number | undefined) => {
+    let selected = "";
+    if (groupNumber || groupNumber === 0) {
+      const groupSelected = groupsGenerated[groupNumber];
+      const indexRandom: number = Math.floor(
+        Math.random() * groupSelected.length
+      );
+      selected = groupSelected[indexRandom];
+    } else {
+      const indexRandom: number = Math.floor(Math.random() * personList.length);
+      selected = personList[indexRandom];
+    }
+    setSelectedPerson(selected);
     setModalOpen(true);
+    selected = "";
   };
 
   return (
@@ -168,7 +175,7 @@ export default function Home() {
             </button>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleSelectPerson}
+              onClick={() => handleSelectPerson(undefined)}
             >
               Pasar al frente
             </button>
@@ -194,7 +201,7 @@ export default function Home() {
                   <div className="p-2">
                     <button
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={handleSelectPerson}
+                      onClick={() => handleSelectPerson(idx)}
                     >
                       Pasar al frente
                     </button>
