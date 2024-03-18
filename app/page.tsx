@@ -1,21 +1,16 @@
 "use client";
 import { Modal } from "@/components";
-import { KeyboardEventHandler, useState } from "react";
+import { KeyboardEventHandler, useEffect, useState } from "react";
 
 export default function Home() {
-  let listSaved: string[] = [];
-  const arrSaved: string | null = localStorage.getItem("personList");
-  if (arrSaved) {
-    listSaved = JSON.parse(arrSaved);
-  }
   const [countGroup, setCountGroup] = useState(2);
   const [personName, setPersonName] = useState<string>("");
-  const [personList, setPersonList] = useState<string[]>(listSaved);
+  const [personList, setPersonList] = useState<string[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [selectedPerson, setSelectedPerson] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [groupsGenerated, setGroupsGenerated] = useState<string[][]>([]);
-
+  console.log("personList", personList);
   const handleInputGroupChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -36,10 +31,12 @@ export default function Home() {
       }, 2000);
     } else {
       setPersonList([...personList, personName]);
-      localStorage.setItem(
-        "personList",
-        JSON.stringify([...personList, personName])
-      );
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "personList",
+          JSON.stringify([...personList, personName])
+        );
+      }
       setPersonName("");
     }
   };
@@ -47,7 +44,9 @@ export default function Home() {
   const handleRemovePerson = (item: string) => {
     const listFiltered = personList.filter((name) => name !== item);
     setPersonList(listFiltered);
-    localStorage.setItem("personList", JSON.stringify(listFiltered));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("personList", JSON.stringify(listFiltered));
+    }
   };
   // no funciona
   const handleKeyDown = (e: KeyboardEventHandler<HTMLButtonElement>) => {
@@ -89,6 +88,13 @@ export default function Home() {
     setModalOpen(true);
     selected = "";
   };
+
+  useEffect(() => {
+    const arrSaved: string | null = localStorage.getItem("personList");
+    if (arrSaved) {
+      setPersonList(JSON.parse(arrSaved));
+    }
+  }, []);
 
   return (
     <main className="flex flex-col min-h-screen p-4">
